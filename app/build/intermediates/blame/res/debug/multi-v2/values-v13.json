@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "E:\\@Development\\Android\\WalkMyAndroidPlaces-Starter\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v13\\values-v13.xml",
+            "outputFile": "C:\\@Development\\Android\\WalkMyAndroidPlaces\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v13\\values-v13.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Willem Luijk\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-26.1.0.aar\\30c5a621c659adb8d93d266001d70e00\\res\\values-v13\\values-v13.xml",
+                    "source": "C:\\Users\\wilui\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-26.1.0.aar\\a2e6778cf4e10c4f905e6a7979ddf39b\\res\\values-v13\\values-v13.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
