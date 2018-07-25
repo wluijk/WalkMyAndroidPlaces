@@ -16,18 +16,27 @@
 package com.example.android.walkmyandroidplaces;
 
 
+
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * AsyncTask for reverse geocoding coordinates into a physical address.
@@ -36,7 +45,9 @@ class FetchAddressTask extends AsyncTask<Location, Void, String> {
 
     private Context mContext;
     private OnTaskCompleted mListener;
-
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    String TAG = "FetchAddressTask";
+    private String rawLocationID;
 
     FetchAddressTask(Context applicationContext, OnTaskCompleted listener) {
         mContext = applicationContext;
@@ -95,12 +106,79 @@ class FetchAddressTask extends AsyncTask<Location, Void, String> {
             resultMessage = TextUtils.join(
                     "\n",
                     addressParts);
+            
+            putAdressInDatabase(addressParts, location);
 
         }
 
         return resultMessage;
     }
 
+    protected void putAdressInDatabase( ArrayList<String> addressParts, Location location)
+    {
+
+        
+        Map<String, Object> loc = new HashMap<>();
+        loc.put("longitude", location.getLongitude());
+        loc.put("latitude", location.getLatitude());
+
+        // Add a new document with a generated ID
+        db.collection("rawLocations")
+                .add(loc)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                        rawLocationID = documentReference.getId();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
+        
+        Map<String, Object> address = new HashMap<>();
+        for (int i=0;i<addressParts.size();i++)
+        {
+            address.put("line"+i, addressParts[i]);
+        }
+        address.put("rawLocationID", rawLocationID);
+
+        db.collection("rawLocations")
+                .add(address)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
+
+        // Add a new document with a generated ID
+        db.collection("rawLocations")
+                .add(loc)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                        rawLocationID = documentReference.getId();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                    }
+                });
+    }
+    
     /**
      * Called once the background thread is finished and updates the
      * UI with the result.

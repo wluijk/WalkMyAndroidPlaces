@@ -36,6 +36,8 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 
 public class MainActivity extends AppCompatActivity implements
         FetchAddressTask.OnTaskCompleted {
@@ -56,6 +58,10 @@ public class MainActivity extends AppCompatActivity implements
 
     // Animation
     private AnimatorSet mRotateAnim;
+
+    String TAG = "FireStore Demo";
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
